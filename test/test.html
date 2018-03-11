@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<style>
+
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#add-div").click(function(){
+					$("#target").append('<div class="inner-div">Inner Div</div>');
+				});
+
+				$("#target").on('click','.inner-div',function(){										
+					var string = $(this).text();
+					$("#text-box").val(string);
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<form>
+			<input id="text-box" type="text" name="course">
+		</form>
+		<div id="target"><div class="inner-div">*</div></div>
+		<button id="add-div">Add Div</button>
+	</body>
+</html>
