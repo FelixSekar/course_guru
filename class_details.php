@@ -1,39 +1,26 @@
 <?php
-require("db_conn.php");
-$c_id=$_GET["course_id"];
+	$classId=$_GET["id"];
+	require("db_conn.php");
 
-$query1 = "select * from course where id='$c_id'";
+	$query1 = "select * from class where id = $classId";
 
-$result1=mysqli_query($conn,$query1);
+	$result1=mysqli_query($conn,$query1);
 
-if(mysqli_num_rows($result1)>0){	
+	if(mysqli_num_rows($result1)>0){	
 	$row=mysqli_fetch_array($result1);
 	
 		$id=$row['id'];
-		$class_id=$row['class_id'];
 		$name=$row['name'];
-		$duration=$row['duration'];
-		$rate=$row['rate'];
-		$start=$row['start'];
-		$end=$row['end'];
-		#echo $id." ".$class_id." ". $name." ". $duration." ". $rate." ". $start ." ".$end;
-}
-else{
-	echo "Unable to get course details";
-}
-
-$query2 = "select * from class where id in (select class_id from course where id=$c_id);";
-
-$result2=mysqli_query($conn,$query2);
-if(mysqli_num_rows($result2)>0){
-	$row=mysqli_fetch_array($result2);
-	$classId = $row["id"];	
-	$className = $row["name"];
-	$contactNo = $row["contact_no"];
-	$classAddr = $row["address"];
-}
-
+		$address=$row['address'];
+		$contactNo=$row['contact_no'];
+		$email=$row['email'];
+	}
+	else{
+		echo "Unable to get class details";
+	}
 ?>
+
+<!DOCTYPE html>
 <html>
 <head>
 
@@ -46,64 +33,18 @@ if(mysqli_num_rows($result2)>0){
     
       gtag('config', 'UA-115094610-1');
     </script>
-    <!-- google analytics ends -->
     
     <!--Responsive-->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-		<!--responsive ends-->
 
 		<link rel="icon" type="image/png" href="favicon.ico">
 		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
     <script src="jquery.js"></script>		
 		<script src="bootstrap/js/bootstrap.min.js"></script>
 
-		<!-- google maps geocoding api -->
-		<script>
-      function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 15,
-        });
-        var geocoder = new google.maps.Geocoder();
-        geocodeAddress(geocoder, map);
-      }
-
-      function geocodeAddress(geocoder, resultsMap) {
-        var address = "<?php echo $classAddr ?>";
-        geocoder.geocode({'address': address}, function(results, status) {
-          if (status === 'OK') {
-            resultsMap.setCenter(results[0].geometry.location);
-            var marker = new google.maps.Marker({
-              map: resultsMap,
-              position: results[0].geometry.location
-            });
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-      }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3BUx3LJ92e4Sh1pId7SKCem1ikf5QF8s&callback=initMap">
-    </script>
-    <!--api ends-->
-
 	<style type="text/css">
 		
 	</style>
-	<style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-
 </head>
 <body>
 <!-- Navigation -->
@@ -232,23 +173,7 @@ if(mysqli_num_rows($result2)>0){
 	</div>
 	</div>
 
-	<div class="jumbotron"></div>
-	<div class="col" id="course">					
-		<div class="card mb-3">
-		  <div class="card-body">
-		    <h5 class="card-text course-link" id="<?php echo $id ?>">Course Name:<?php echo $name ?></h5>
-		    <p class="card-text">Duration:<?php echo $duration ?></p>
-		    <p class="card-text">Rate:<?php echo $rate ?></p>
-		    <p class="card-text">Starts on:<?php echo $start ?></p>
-		    <p class="card-text">Ends on:<?php echo $end ?></p>
-		    <p class="text"><a href="class_details.php?id=<?php echo $classId ?>"><?php echo "Course Provider: $className";?></a></p>
-			<p class="text"><?php echo "Contact No: $contactNo";?></p>
-		  </div>
-		</div>					
-	</div>
-
-	
-    <div id="map"></div>
+<div class="jumbotron"></div>
 
 </body>
 </html>
