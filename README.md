@@ -1,7 +1,7 @@
 # course_guru
 A website that helps you find coaching classes near you providing the courses for any subject you want to learn.
 
-Setting up ...
+#Setting up ...
 
 1.Create database 'course_guru'
 
