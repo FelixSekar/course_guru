@@ -16,7 +16,7 @@
     <!--Responsive-->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 
-		<link rel="icon" type="image/png" href="favicon.ico"/>
+		<link rel="icon" type="image/png" href="favicon.ico">
 		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
     <script src="jquery.js"></script>		
 		<script src="bootstrap/js/bootstrap.min.js"></script>
@@ -92,7 +92,7 @@
 					if(event.keyCode == 27){
 						$("#livesearch").hide();
 					}
-					else if(event.keyCode == 40 && resultBox){
+					else if(event.keyCode == 40 && resultBox == 1){
 						console.log("down key pressed " + itemIndex +" "+ boxLength);
 						$(".live-item").removeClass("live-select");
 						var item = $("#livesearch .live-item").eq(itemIndex);
@@ -159,7 +159,7 @@
 	</head>
 	<body>
 		<!-- Navigation -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		  <a class="navbar-brand" href="#">Course Guru</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
@@ -170,7 +170,7 @@
 		        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
 		      </li>
 		      <li class="nav-item">
-		        <a class="nav-link" href="#">About Us</a>
+		        <a class="nav-link" href="about_us.html">About Us</a>
 		      </li>
 		      <li class="nav-item">
 		        <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">Login</a>

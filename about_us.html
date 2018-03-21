@@ -1,83 +1,189 @@
-<?php
-require("db_conn.php");
-$c_id=$_GET["course_id"];
 
-$query1 = "select * from course where id='$c_id'";
-
-$result1=mysqli_query($conn,$query1);
-
-if(mysqli_num_rows($result1)>0){	
-	$row=mysqli_fetch_array($result1);
-	
-		$id=$row['id'];
-		$class_id=$row['class_id'];
-		$name=$row['name'];
-		$duration=$row['duration'];
-		$rate=$row['rate'];
-		$start=$row['start'];
-		$end=$row['end'];
-		$image=$row['image'];
-		#echo $id." ".$class_id." ". $name." ". $duration." ". $rate." ". $start ." ".$end;
-}
-else{
-	echo "Unable to get course details";
-}
-
-$query2 = "select * from class where id in (select class_id from course where id=$c_id);";
-
-$result2=mysqli_query($conn,$query2);
-if(mysqli_num_rows($result2)>0){
-	$row=mysqli_fetch_array($result2);
-	$classId = $row["id"];	
-	$className = $row["name"];
-	$contactNo = $row["contact_no"];
-	$classAddr = $row["address"];
-}
-
-?>
 <html>
-<head>
-
+	<head>
 		<!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115094610-1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+    
       gtag('config', 'UA-115094610-1');
     </script>
-    <!-- google analytics ends -->
     
     <!--Responsive-->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-		<!--responsive ends-->
 
 		<link rel="icon" type="image/png" href="favicon.ico">
 		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
     <script src="jquery.js"></script>		
 		<script src="bootstrap/js/bootstrap.min.js"></script>
 
+		<!--google font-->
+		<link href="https://fonts.googleapis.com/css?family=Berkshire+Swash" rel="stylesheet">
+		<style>
+			body{
+				margin: 0px;
+				padding: 0px;
+			}
 
+			#search-wrapper{
+				display: inline-block;
+				padding-left: 4%;
+				padding-right: 4%;
+				margin: 0px;
+			}
+			#search{
+				width: 100%;
+				border:1px solid grey;
+				overflow:hidden;
+				padding: 0px;
+			}
+			#search input{
+				border:0;
+			}
 
-	<style type="text/css">
-		#course-image{
-		    height: 100%;
-		    width: 100%;
-		}
-	</style>
-	<style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 75%;
-        width: 94%;
-        margin: 3%;
-      }
-    </style>
+			.live-item{
+				
+				padding: 5px;
+				color: blue;
+				background-color: white;	
+			}
+			.live-item:hover{
+				background-color: lightblue;
+				cursor:pointer;
+			}
+			#search-wrapper form{
+				margin:0px;
+				padding: 0px;
+			}
+			#livesearch{
+				border: 1px solid grey;
+				padding: 0px;
+				display: none;
+				position: absolute;
+				width: 100%;
+				z-index: 1;
+			}
 
-</head>
-<body>
-<!-- Navigation -->
+			.live-select{
+				background-color:lightblue; 
+			}
+			
+			#courseguru{
+      	font-family: 'Berkshire Swash', cursive;
+      	color: #cc0066;
+			}
+			h3{
+			margin: 0px 130px;}
+				
+div.people{
+margin: 0px 130px 0px 130px;
+}		
+				
+div.gallery {
+	margin: 0px 60px 0px 0px;
+	border: 1px solid #ccc;
+    float: left;
+    width: 180px;
+	height: 200px;
+}
+
+div.gallery:hover {
+    border: 1px solid #777;
+}
+
+div.gallery img {
+    width: 100%;
+    height: auto;
+}
+
+div.desc {
+    padding: 15px;
+    text-align: center;
+}
+		</style>
+
+		<script>
+			
+			$(document).ready(function(){
+				var resultBox=0; //0-closed 1-open
+				var itemIndex=0;
+				var boxLength;
+				var itemValue;
+				$("#search input").keyup(function(event){
+					//console.log("key pressed");
+					//check if keycode is not ESC(27) / RIGHT(37) / UP(38) / LEFT(39) / BOTTOM(40)
+					if(event.keyCode == 27){
+						$("#livesearch").hide();
+					}
+					else if(event.keyCode == 40 && resultBox){
+						console.log("down key pressed " + itemIndex +" "+ boxLength);
+						$(".live-item").removeClass("live-select");
+						var item = $("#livesearch .live-item").eq(itemIndex);
+						$(item).addClass("live-select");
+						itemValue = $(item).text();
+						$("#searh-input").val(itemValue);
+						itemIndex = (+itemIndex + 1)%boxLength;
+						//console.log(itemIndex);
+					}
+					else{
+						var q = $(this).val();
+						if(q){
+							$.ajax({
+		            url: 'livesearch.php',
+		            type: 'post',
+		            data: {query:q},
+		            dataType: 'json',
+		            success: function(data){
+		            	boxLength = data.length;
+
+		            	//console.log(data);            	
+		            	$("#livesearch").empty();
+		            	//check that the returned obj is not empty
+		            	if(!$.isEmptyObject(data)){
+		            		//console.log(data);
+		            		$("#livesearch").show();
+										resultBox = 1;
+		            		//loop to print all obj values to #livesearch
+		            		$.each(data, function(index, value) {
+										  $("#livesearch").append('<div class="live-item">'+data[index]+'</div>');
+										});
+										//close #livesearch when clicked anywhere else
+									  $(document).click(function(event){
+									  	//console.log("closing");
+									  	event.stopPropagation();
+									  	$("#livesearch").hide();
+									  });
+									  itemIndex = 0;
+										
+		            	}
+		            	else{
+		            		$("#livesearch").hide();
+		            		resultBox=0;
+		            	}
+			          }                  	                  
+	      			});
+						}
+						else{
+							$("#livesearch").empty();
+							$("#livesearch").hide();
+							resultBox=0;
+						}										
+					}
+
+				});
+
+				$("#livesearch").on('click','.live-item',function(){					
+					var choice = $(this).text();
+					$("#searh-input").val(choice);
+					$("#search-form").submit();
+				});
+			});			
+		</script>
+	</head>
+	<body>
+		<!-- Navigation -->
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		  <a class="navbar-brand" href="index.php">Course Guru</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -203,52 +309,41 @@ if(mysqli_num_rows($result2)>0){
 	</div>
 	</div>
 
-	<div class="jumbotron"><?php echo '<img id="course-image" src="data:image/jpeg;base64,'.base64_encode($image).'"/>' ?></div>
-	<div class="col" id="course">					
-		<div class="card mb-3">
-		  <div class="card-body">
-		    <h5 class="card-text course-link" id="<?php echo $id ?>">Course Name:<?php echo $name ?></h5>
-		    <p class="card-text">Duration:<?php echo $duration ?></p>
-		    <p class="card-text">Rate:<?php echo $rate ?></p>
-		    <p class="card-text">Starts on:<?php echo $start ?></p>
-		    <p class="card-text">Ends on:<?php echo $end ?></p>
-		    <p class="text"><a href="class_details.php?id=<?php echo $classId ?>"><?php echo "Course Provider: $className";?></a></p>
-			<p class="text"><?php echo "Contact No: $contactNo";?></p>
-		  </div>
-		</div>					
-	</div>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+<div class="container-fluid">
+			<div class="row">
+			  <h2 id="courseguru" class="text-center col">About Us</h2>
+			</div>
+			<br>
+			<h3>We have developed this site as a link between students searching for a course and teaching institutes in search of students for their program</h3>
+			<br>
+			<h3>The developers of this website are students currently pursuing Bachelors of Engineering in Information Technology at FCRIT, Vashi</h3> 
+			<br>
+			<h3>Developers:</h3>
+<div class="people">
+<div class="gallery">
+    <img src="images/developers/felix.jpeg" alt="Felix Sekar" width="300" height="200">
+  <div class="desc">Felix Sekar</div>
+</div>
 
-	
-    <div id="map"></div>
-    		<!-- google maps geocoding api -->
-		<script>
-      function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 15,
-        });
-        var geocoder = new google.maps.Geocoder();
-        geocodeAddress(geocoder, map);
-      }
+<div class="gallery">
+    <img src="images/developers/shalom.jpg" alt="Shalom Daniel" width="300" height="200">
+  <div class="desc">Shalom Daniel</div>
+</div>
 
-      function geocodeAddress(geocoder, resultsMap) {
-        var address = "<?php echo $classAddr ?>";
-        geocoder.geocode({'address': address}, function(results, status) {
-          if (status === 'OK') {
-            resultsMap.setCenter(results[0].geometry.location);
-            var marker = new google.maps.Marker({
-              map: resultsMap,
-              position: results[0].geometry.location
-            });
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-      }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3BUx3LJ92e4Sh1pId7SKCem1ikf5QF8s&callback=initMap">
-    </script>
-    <!--api ends-->
+<div class="gallery">
+    <img src="images/developers/elvis.jpeg" alt="Elvis D'costa" width="300" height="200">
+  <div class="desc">Elvis D'costa</div>
+</div>
 
-</body>
+<div class="gallery">
+    <img src="images/developers/vineet.jpeg" alt="Vineet Abraham" width="300" height="200">
+  <div class="desc">Vineet Abraham</div>
+</div>
+</div>
+			
 </html>
