@@ -8,3 +8,5 @@ A website that helps you find coaching classes near you providing the courses fo
 2.Import 'course_guru.sql'
 
 3.Make changes to 'db_conn.php' with your database server's details.
+
+i just made a change
