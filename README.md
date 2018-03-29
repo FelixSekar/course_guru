@@ -1,4 +1,4 @@
-# course_guru
+# Title
 A website that helps you find coaching classes near you providing the courses for any subject you want to learn.
 
 #### Setting up ...
