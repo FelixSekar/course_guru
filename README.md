@@ -1,4 +1,4 @@
-# Title
+# Course Guru
 A website that helps you find coaching classes near you providing the courses for any subject you want to learn.
 
 #### Setting up ...
@@ -9,4 +9,3 @@ A website that helps you find coaching classes near you providing the courses fo
 
 3.Make changes to 'db_conn.php' with your database server's details.
 
-i just made a change
